@@ -92,7 +92,7 @@ export const Upload = () => {
                 </button>
             </div>
             <div className="flex justify-center content-center mt-5">
-                {/* Upload Progress: {parseInt(progress.loaded).toString()}% */}
+                Upload Progress: {Math.round(progress.loaded).toString()}%
             </div>
         </>
     );
