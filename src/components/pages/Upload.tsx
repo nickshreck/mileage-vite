@@ -93,6 +93,11 @@ export const Upload = () => {
             </div>
             <div className="flex justify-center content-center mt-5">
                 Upload Progress: {Math.round(progress.loaded).toString()}%
+                <progress
+                    className="progress progress-secondary w-56"
+                    value={Math.round(progress.loaded).toString()}
+                    max="100"
+                ></progress>
             </div>
         </>
     );
