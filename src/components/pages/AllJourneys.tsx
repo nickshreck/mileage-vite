@@ -71,12 +71,12 @@ export default function AllJourneys() {
         console.log("getLocations", getLocations.data);
     }, [getLocations.data]);
 
+    const [startLocationFilter, setSLFilter] = useState(0);
+    const [endLocationFilter, setELFilter] = useState(0);
+
     if (!getLocations?.data) {
         return <div>Loading...</div>;
     }
-
-    const [startLocationFilter, setSLFilter] = useState(0);
-    const [endLocationFilter, setELFilter] = useState(0);
 
     // useEffect(() => {
     //     // setDate({ month, year });

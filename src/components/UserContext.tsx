@@ -16,7 +16,7 @@ export function useUser() {
     return useContext(UserContext);
 }
 
-export function UserProvider({ children }) {
+export function UserProvider({ children }: { children: React.ReactNode }) {
     const googleProfile = useGoogleProfile();
     const user = trpc.useQuery([
         "getUser",
@@ -28,13 +28,19 @@ export function UserProvider({ children }) {
         },
     ]);
 
+    if (!user.data) {
+        return null;
+    }
+
+    // if (user.data.imageUrl === null) {
+    //     user.data.imageUrl = googleProfile.imageUrl;
+    // }
+
     return (
         <>
-            {user?.data ? (
-                <UserContext.Provider value={user.data}>
-                    {children}
-                </UserContext.Provider>
-            ) : null}
+            <UserContext.Provider value={user.data}>
+                {children}
+            </UserContext.Provider>
         </>
     );
 }

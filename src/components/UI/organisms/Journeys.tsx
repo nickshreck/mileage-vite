@@ -3,7 +3,7 @@ import { Journey } from "./Journey";
 import moment from "moment";
 
 export default function Journeys({ updateTrip, children }: any) {
-    const handleChange = (event, trip) => {
+    const handleChange = (event: any, trip: any) => {
         if (
             trip.classification === "unclassified" ||
             trip.classification === "personal"

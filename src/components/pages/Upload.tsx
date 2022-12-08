@@ -4,8 +4,6 @@ import axios from "axios";
 
 import { URL } from "../../constants";
 
-console.log("URL", URL);
-
 const endpoint = `${URL}/upload/`;
 
 export const Upload = () => {
@@ -29,20 +27,39 @@ export const Upload = () => {
     console.log("googleId", profile);
 
     const handleUpload = () => {
-        const data = new FormData();
-        console.log("file", file.selectedFile);
-        // return;
-        data.append("file", file.selectedFile, file.selectedFile.name);
+        // Get the file from the event object
+        // const file = event.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        // Create a FormData object to store the file in the request body
+        const formData = new FormData();
+
+        // formData.append("file", file.selectedFile);
+
+        if (file.selectedFile !== null) {
+            formData.append("file", file.selectedFile);
+        } else {
+            // Handle the case where the file.selectedFile variable is null
+            console.error("The file.selectedFile variable is null");
+            return;
+        }
+
         axios
-            .post(endpoint, data, {
+            .post(endpoint, formData, {
                 params: {
                     googleId: profile.googleId,
                 },
-                onUploadProgress: (ProgressEvent) => {
-                    setProgress({
-                        loaded:
-                            (ProgressEvent.loaded / ProgressEvent.total) * 100,
-                    });
+                onUploadProgress: (ProgressEvent: any) => {
+                    if (ProgressEvent !== null) {
+                        setProgress({
+                            loaded:
+                                (ProgressEvent.loaded / ProgressEvent.total) *
+                                100,
+                        });
+                    }
                 },
             })
             .then((res) => {
@@ -52,6 +69,12 @@ export const Upload = () => {
                 );
             });
     };
+
+    if (!progress) {
+        return <></>;
+    } else {
+        progress.loaded = Number(progress.loaded);
+    }
 
     return (
         <>
@@ -69,7 +92,7 @@ export const Upload = () => {
                 </button>
             </div>
             <div className="flex justify-center content-center mt-5">
-                Upload Progress: {parseInt(Number(progress.loaded))}%
+                {/* Upload Progress: {parseInt(progress.loaded).toString()}% */}
             </div>
         </>
     );

@@ -4,7 +4,7 @@ import moment from "moment";
 import Journeys from "./Journeys";
 
 export default function Uniques({ updateTrip, children }: any) {
-    const handleChange = (event, trip) => {
+    const handleChange = (event: any, trip: any) => {
         console.log("checkAll Trips", trip);
     };
 
