@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "../UserContext";
 import axios from "axios";
+import { GoogleDataInstructions } from "../UI/organisms/GoogleDataInstructions";
 
 import { URL } from "../../constants";
 
@@ -9,6 +10,7 @@ const endpoint = `${URL}/upload/`;
 export const Upload = () => {
     const profile = useUser();
     const [file, setFile] = useState({ selectedFile: null });
+    const [complete, setComplete] = useState(false);
     const [progress, setProgress] = useState({ loaded: 0 });
     // this.state = { selectedFile: null, loaded: 0 };
     const handleselectedFile = (event: any) => {
@@ -63,6 +65,7 @@ export const Upload = () => {
                 },
             })
             .then((res) => {
+                setComplete(true);
                 console.log(
                     "This is the reply from the upload POST:",
                     res.statusText
@@ -76,23 +79,36 @@ export const Upload = () => {
         progress.loaded = Number(progress.loaded);
     }
 
+    if (complete) {
+        return (
+            <div className="flex justify-center content-center mt-5">
+                Please wait up to 5 minutes for your data to be processed.
+            </div>
+        );
+    }
+
     return (
         <>
+            <GoogleDataInstructions />
             <div className="flex justify-center content-center mt-5">
                 <input
                     type="file"
                     name=""
                     id=""
+                    className="input input-bordered input-accent w-full max-w-xs"
                     onChange={handleselectedFile}
                 />
             </div>
             <div className="flex justify-center content-center mt-5">
-                <button className="btn btn-wide" onClick={handleUpload}>
+                <button
+                    className="btn btn-wide btn-success"
+                    onClick={handleUpload}
+                >
                     Upload
                 </button>
             </div>
             <div className="flex justify-center content-center mt-5">
-                Upload Progress: {Math.round(progress.loaded).toString()}%
+                {/* Upload Progress: {Math.round(progress.loaded).toString()}% */}
                 <progress
                     className="progress progress-secondary w-56"
                     value={Math.round(progress.loaded).toString()}

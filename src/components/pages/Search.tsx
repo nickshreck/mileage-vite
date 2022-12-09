@@ -6,14 +6,20 @@ import Journeys from "../UI/organisms/Journeys";
 import { trpc } from "../../trpc";
 import { useUser } from "../UserContext";
 
-export function Search() {
+export function Search({
+    years,
+}: {
+    years: { year: number; months: { label: string; value: number }[] }[];
+}) {
     const profile = useUser();
     useEffect(() => {
         console.log("profile", profile);
     }, [profile]);
 
     if (profile !== undefined) {
-        return <DisplayJourneys profile={profile}></DisplayJourneys>;
+        return (
+            <DisplayJourneys years={years} profile={profile}></DisplayJourneys>
+        );
     } else {
         return <></>;
     }
@@ -21,6 +27,7 @@ export function Search() {
 
 export function DisplayJourneys({
     profile,
+    years,
 }: {
     profile: {
         id: string;
@@ -30,6 +37,7 @@ export function DisplayJourneys({
         name: string;
         // createdAt: string;
     };
+    years: { year: number; months: { label: string; value: number }[] }[];
 }) {
     const [date, setDate] = useState({ month: 1, year: 2022 });
 
@@ -49,7 +57,11 @@ export function DisplayJourneys({
     if (data) {
         return (
             <>
-                <DateHeader date={date} setDate={setDate}></DateHeader>
+                <DateHeader
+                    years={years}
+                    date={date}
+                    setDate={setDate}
+                ></DateHeader>
 
                 <div className="container mx-auto">
                     <div className="flex flex-col">
@@ -61,7 +73,11 @@ export function DisplayJourneys({
     } else {
         return (
             <>
-                <DateHeader date={date} setDate={setDate}></DateHeader>
+                <DateHeader
+                    years={years}
+                    date={date}
+                    setDate={setDate}
+                ></DateHeader>
             </>
         );
     }

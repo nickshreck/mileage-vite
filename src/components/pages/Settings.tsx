@@ -15,7 +15,7 @@ export const Settings = () => {
 
     return (
         <>
-            <TriggerScan></TriggerScan>
+            {/* <TriggerScan></TriggerScan> */}
 
             <div className="flex justify-center content-center mt-5">
                 <button

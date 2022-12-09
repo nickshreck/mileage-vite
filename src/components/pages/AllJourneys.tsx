@@ -6,8 +6,13 @@ import Uniques from "../UI/organisms/Uniques";
 import { trpc } from "../../trpc";
 import { useUser } from "../UserContext";
 import DropDown from "../UI/atoms/DropDown";
+import Loading from "../UI/atoms/Loading";
 
-export default function AllJourneys() {
+export default function AllJourneys({
+    years,
+}: {
+    years: { year: number; months: { label: string; value: number }[] }[];
+}) {
     const profile = useUser();
 
     const [date, setDate] = useState({ month: 1, year: 2022 });
@@ -22,25 +27,25 @@ export default function AllJourneys() {
         },
     ]);
 
-    const searchTrips = trpc.useQuery([
-        "searchTrips",
-        {
-            userId: profile.id,
-            year: date.year,
-            month: date.month,
-            search: "all.unique",
-        },
-    ]);
+    // const searchTrips = trpc.useQuery([
+    //     "searchTrips",
+    //     {
+    //         userId: profile.id,
+    //         year: date.year,
+    //         month: date.month,
+    //         search: "all.unique",
+    //     },
+    // ]);
 
-    const getLocations: any = trpc.useQuery([
-        "getLocations",
-        {
-            userId: profile.id,
-            year: date.year,
-            month: date.month,
-            search: "all.unique",
-        },
-    ]);
+    // const getLocations: any = trpc.useQuery([
+    //     "getLocations",
+    //     {
+    //         userId: profile.id,
+    //         year: date.year,
+    //         month: date.month,
+    //         search: "all.unique",
+    //     },
+    // ]);
 
     const update = trpc.useMutation("updateTrip");
     const updateTrip = async (id: string, classification: string) => {
@@ -63,33 +68,25 @@ export default function AllJourneys() {
         console.log("rendering trips data", data.data);
     }, [data.data]);
 
-    useEffect(() => {
-        console.log("searchTrips", searchTrips.data);
-    }, [searchTrips.data]);
+    // useEffect(() => {
+    //     console.log("searchTrips", searchTrips.data);
+    // }, [searchTrips.data]);
 
-    useEffect(() => {
-        console.log("getLocations", getLocations.data);
-    }, [getLocations.data]);
+    // useEffect(() => {
+    //     console.log("getLocations", getLocations.data);
+    // }, [getLocations.data]);
 
     const [startLocationFilter, setSLFilter] = useState(0);
     const [endLocationFilter, setELFilter] = useState(0);
 
-    if (!getLocations?.data) {
-        return <div>Loading...</div>;
-    }
-
-    // useEffect(() => {
-    //     // setDate({ month, year });
-
-    //     console.log("startLocationFilter", startLocationFilter);
-    //     console.log("endLocationFilter", endLocationFilter);
-
-    // }, [startLocationFilter, endLocationFilter]);
+    // if (!getLocations?.data) {
+    //     return <Loading />;
+    // }
 
     if (data) {
         return (
             <>
-                <DropDown
+                {/* <DropDown
                     startValue={0}
                     data={getLocations?.data?.sL}
                     setChange={setSLFilter}
@@ -98,15 +95,20 @@ export default function AllJourneys() {
                     startValue={0}
                     data={getLocations?.data?.eL}
                     setChange={setELFilter}
-                />
+                /> */}
 
-                <DateHeader date={date} setDate={setDate}></DateHeader>
+                <DateHeader
+                    date={date}
+                    years={years}
+                    setDate={setDate}
+                ></DateHeader>
 
                 <div className="container mx-auto">
                     <div className="flex flex-col">
-                        <Uniques updateTrip={updateTrip}>
+                        {/* <Uniques updateTrip={updateTrip}>
                             {searchTrips.data}
-                        </Uniques>
+                        </Uniques> */}
+                        <Journeys updateTrip={updateTrip}>{data.data}</Journeys>
                     </div>
                 </div>
             </>
@@ -114,7 +116,11 @@ export default function AllJourneys() {
     } else {
         return (
             <>
-                <DateHeader date={date} setDate={setDate}></DateHeader>
+                <DateHeader
+                    date={date}
+                    years={years}
+                    setDate={setDate}
+                ></DateHeader>
             </>
         );
     }

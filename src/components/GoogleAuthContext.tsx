@@ -3,6 +3,8 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { gapi } from "gapi-script";
 
+import { Welcome } from "./UI/organisms/Welcome";
+
 const googleProfile = {
     name: "name",
     email: "email",
@@ -60,16 +62,21 @@ export function GoogleAuthProvider({ children }: any) {
                     </div>
                 </>
             ) : (
-                <div className="flex justify-center content-center mt-5">
-                    <GoogleLogin
-                        clientId={clientId}
-                        buttonText="Sign in with Google"
-                        onSuccess={onSuccess}
-                        onFailure={onFailure}
-                        cookiePolicy={"single_host_origin"}
-                        isSignedIn={true}
-                    />
-                </div>
+                <>
+                    <div className="flex justify-center content-center mt-5">
+                        <Welcome />
+                    </div>
+                    <div className="flex justify-center content-center mt-5">
+                        <GoogleLogin
+                            clientId={clientId}
+                            buttonText="Sign in with Google"
+                            onSuccess={onSuccess}
+                            onFailure={onFailure}
+                            cookiePolicy={"single_host_origin"}
+                            isSignedIn={true}
+                        />
+                    </div>
+                </>
             )}
         </>
     );
