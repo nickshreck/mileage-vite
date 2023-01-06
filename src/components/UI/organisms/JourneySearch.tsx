@@ -171,7 +171,13 @@ export function JourneySearch({
                 {groupBy == "unique" ? (
                     <div className="container mx-auto">
                         <div className="">
-                            <Uniques updateTrip={updateTrip}>
+                            <Uniques
+                                updateTrip={updateTrip}
+                                startLocationFilter={startLocationFilter}
+                                filterByStart={filterByStart}
+                                endLocationFilter={endLocationFilter}
+                                filterByDestination={filterByDestination}
+                            >
                                 {searchTrips.data}
                             </Uniques>
                         </div>

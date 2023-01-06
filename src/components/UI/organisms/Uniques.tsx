@@ -3,9 +3,26 @@ import { getDuration } from "../../../helpers/getDuration";
 import moment from "moment";
 import Journeys from "./Journeys";
 
-export default function Uniques({ updateTrip, children }: any) {
+export default function Uniques({
+    updateTrip,
+    children,
+    filterByStart,
+    startLocationFilter,
+    filterByDestination,
+    endLocationFilter,
+}: any) {
     const handleChange = (event: any, trip: any) => {
-        console.log("checkAll Trips", trip);
+        console.log("checkAll Trips", trip.trips);
+        // trip.trips.map((tripx: any, index: any) => {
+        //     // if (
+        //     //     trip.classification === "unclassified" ||
+        //     //     trix.classification === "personal"
+        //     // ) {
+        //     updateTrip(tripx.id, "business");
+        //     // } else {
+        //     //     updateTrip(event.target.value, "personal");
+        //     // }
+        // });
     };
 
     const [showTrips, setShowTrips] = React.useState(false);
@@ -18,6 +35,15 @@ export default function Uniques({ updateTrip, children }: any) {
                 //         Number(moment(a.startTime).format("DD")) -
                 //         Number(moment(b.startTime).format("DD"))
                 // )
+                .filter(
+                    (trip: any) =>
+                        filterByStart
+                            ? trip.startLocation === startLocationFilter
+                            : true
+                    // (filterByDestination
+                    //     ? trip.endLocation === endLocationFilter
+                    //     : true)
+                )
                 .map((trip: any, index: any) => {
                     try {
                         return (
@@ -59,7 +85,11 @@ export default function Uniques({ updateTrip, children }: any) {
                                                         <input
                                                             type="checkbox"
                                                             className="toggle"
-                                                            checked
+                                                            onChange={() =>
+                                                                setShowTrips(
+                                                                    !showTrips
+                                                                )
+                                                            }
                                                         />
                                                     </div>
                                                 )}
@@ -89,7 +119,9 @@ export default function Uniques({ updateTrip, children }: any) {
 
                                         {showTrips ? (
                                             <div>
-                                                <Journeys>
+                                                <Journeys
+                                                    updateTrip={updateTrip}
+                                                >
                                                     {trip.trips}
                                                 </Journeys>
                                             </div>
