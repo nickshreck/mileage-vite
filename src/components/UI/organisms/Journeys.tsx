@@ -27,6 +27,7 @@ export default function Journeys({ updateTrip, children }: any) {
                         <Journey
                             trip={trip}
                             index={index}
+                            key={`${index}-trip`}
                             handleChange={handleChange}
                         />
                     );

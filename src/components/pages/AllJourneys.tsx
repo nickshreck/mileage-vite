@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 
 import { DateHeader } from "../UI/organisms/DateHeader";
 import Journeys from "../UI/organisms/Journeys";
-import Uniques from "../UI/organisms/Uniques";
+import { JourneySearch } from "../UI/organisms/JourneySearch";
+import BusinessJourneys from "../UI/organisms/BusinessJourneys";
+// import Uniques from "../UI/organisms/Uniques";
 import { trpc } from "../../trpc";
 import { useUser } from "../UserContext";
-import DropDown from "../UI/atoms/DropDown";
-import Loading from "../UI/atoms/Loading";
+// import DropDown from "../UI/atoms/DropDown";
+// import Loading from "../UI/atoms/Loading";
+import MonthReview from "../UI/organisms/MonthReview";
+import Uniques from "../UI/organisms/Uniques";
 
 export default function AllJourneys({
     years,
@@ -27,26 +31,6 @@ export default function AllJourneys({
         },
     ]);
 
-    // const searchTrips = trpc.useQuery([
-    //     "searchTrips",
-    //     {
-    //         userId: profile.id,
-    //         year: date.year,
-    //         month: date.month,
-    //         search: "all.unique",
-    //     },
-    // ]);
-
-    // const getLocations: any = trpc.useQuery([
-    //     "getLocations",
-    //     {
-    //         userId: profile.id,
-    //         year: date.year,
-    //         month: date.month,
-    //         search: "all.unique",
-    //     },
-    // ]);
-
     const update = trpc.useMutation("updateTrip");
     const updateTrip = async (id: string, classification: string) => {
         update.mutate(
@@ -64,39 +48,23 @@ export default function AllJourneys({
         return updateTrip;
     };
 
+    // const [startLocationFilter, setSLFilter] = useState(0);
+    // const [endLocationFilter, setELFilter] = useState(0);
+
+    const [showJourneys, setShowJourneys] = useState(false);
+    const [showBusinessTrips, setShowBusinessTrips] = useState(false);
+
     useEffect(() => {
-        console.log("rendering trips data", data.data);
-    }, [data.data]);
+        setShowJourneys(false);
+    }, [date]);
 
-    // useEffect(() => {
-    //     console.log("searchTrips", searchTrips.data);
-    // }, [searchTrips.data]);
-
-    // useEffect(() => {
-    //     console.log("getLocations", getLocations.data);
-    // }, [getLocations.data]);
-
-    const [startLocationFilter, setSLFilter] = useState(0);
-    const [endLocationFilter, setELFilter] = useState(0);
-
-    // if (!getLocations?.data) {
-    //     return <Loading />;
-    // }
+    useEffect(() => {
+        setShowJourneys(false);
+    }, [showBusinessTrips]);
 
     if (data) {
         return (
             <>
-                {/* <DropDown
-                    startValue={0}
-                    data={getLocations?.data?.sL}
-                    setChange={setSLFilter}
-                />
-                <DropDown
-                    startValue={0}
-                    data={getLocations?.data?.eL}
-                    setChange={setELFilter}
-                /> */}
-
                 <DateHeader
                     date={date}
                     years={years}
@@ -105,10 +73,57 @@ export default function AllJourneys({
 
                 <div className="container mx-auto">
                     <div className="flex flex-col">
-                        {/* <Uniques updateTrip={updateTrip}>
-                            {searchTrips.data}
-                        </Uniques> */}
-                        <Journeys updateTrip={updateTrip}>{data.data}</Journeys>
+                        {!showJourneys && (
+                            <>
+                                <MonthReview
+                                    date={date}
+                                    data={data}
+                                    setShowBusinessTrips={setShowBusinessTrips}
+                                    showBusinessTrips={showBusinessTrips}
+                                ></MonthReview>
+                                {!showBusinessTrips && (
+                                    <div className="hero bg-base-200 my-0">
+                                        <div className="my-10 flex flex-col">
+                                            <button
+                                                className="btn btn-active btn-info mx-1 my-1"
+                                                onClick={() => {
+                                                    setShowJourneys(true);
+                                                }}
+                                            >
+                                                Edit Month
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {showJourneys && (
+                            <>
+                                <div className="hero bg-base-200 my-5">
+                                    <div className="my-10 flex flex-col">
+                                        <button
+                                            className="btn btn-active btn-info mx-1 my-1"
+                                            onClick={() => {
+                                                setShowJourneys(false);
+                                            }}
+                                        >
+                                            Monthly Review
+                                        </button>
+                                    </div>
+                                </div>
+                                <JourneySearch
+                                    date={date}
+                                    updateTrip={updateTrip}
+                                ></JourneySearch>
+                            </>
+                        )}
+
+                        {showBusinessTrips && (
+                            <BusinessJourneys updateTrip={updateTrip}>
+                                {data?.data?.data}
+                            </BusinessJourneys>
+                        )}
                     </div>
                 </div>
             </>

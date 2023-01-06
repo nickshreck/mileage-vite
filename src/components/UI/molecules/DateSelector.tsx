@@ -49,6 +49,7 @@ export default function DateSelector({
                 data={months}
                 setChange={setMonth}
             />
+            <div className="divider divider-horizontal"></div>
             <DropDown
                 name="years"
                 startValue={year}
