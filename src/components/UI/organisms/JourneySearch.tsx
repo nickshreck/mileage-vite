@@ -6,6 +6,7 @@ import Uniques from "./Uniques";
 import { trpc } from "../../../trpc";
 import { useUser } from "../../UserContext";
 import DropDown from "../atoms/DropDown";
+import DropDownV2 from "../atoms/DropDownV2";
 import Loading from "../atoms/Loading";
 
 export function JourneySearch({
@@ -57,18 +58,21 @@ export function JourneySearch({
         console.log("searchTrips", searchTrips.data);
     }, [searchTrips.data]);
 
+    const [startLocationFilter, setSLFilter] = useState("id");
+    const [endLocationFilter, setELFilter] = useState("id");
+
     useEffect(() => {
         console.log("getLocations", getLocations.data);
+        setSLFilter(getLocations?.data?.sL[0].value);
+        setELFilter(getLocations?.data?.eL[0].value);
     }, [getLocations.data]);
-
-    const [startLocationFilter, setSLFilter] = useState(0);
-    const [endLocationFilter, setELFilter] = useState(0);
 
     const [filterByStart, setStartFilter] = useState(false);
     const [filterByDestination, setDestinationFilter] = useState(false);
 
     const [groupBy, setGroupBy] = useState("individual");
     const groupByUnique = true;
+
     useEffect(() => {
         console.log("filterByStart", filterByStart);
     }, [filterByStart]);
@@ -129,11 +133,13 @@ export function JourneySearch({
                                         }}
                                     />
                                 </div>
-                                <DropDown
+                                <DropDownV2
                                     name="startLocation"
-                                    startValue={0}
+                                    startValue={startLocationFilter}
                                     data={getLocations?.data?.sL}
-                                    setChange={setSLFilter}
+                                    setChange={(value) => {
+                                        setSLFilter(value);
+                                    }}
                                 />
                             </div>
                         </div>
@@ -151,22 +157,25 @@ export function JourneySearch({
                                         }}
                                     />
                                 </div>
-                                <DropDown
+                                <DropDownV2
                                     name="endLocation"
-                                    startValue={0}
+                                    startValue={endLocationFilter}
                                     data={getLocations?.data?.eL}
-                                    setChange={setELFilter}
+                                    setChange={(value) => {
+                                        setELFilter(value);
+                                    }}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-base-200 container my-5 p-5 mx-auto">
+                {/* <div className="bg-base-200 container my-5 p-5 mx-auto">
                     <div className="flex justify-end">
+                    <div className="">Business</div>
                         <div className="">Select All</div>
                     </div>
-                </div>
+                </div> */}
 
                 {groupBy == "unique" ? (
                     <div className="container mx-auto">
@@ -185,7 +194,13 @@ export function JourneySearch({
                 ) : (
                     <div className="container mx-auto">
                         <div className="">
-                            <Journeys updateTrip={updateTrip}>
+                            <Journeys
+                                updateTrip={updateTrip}
+                                startLocationFilter={startLocationFilter}
+                                filterByStart={filterByStart}
+                                endLocationFilter={endLocationFilter}
+                                filterByDestination={filterByDestination}
+                            >
                                 {data?.data?.data}
                             </Journeys>
                         </div>

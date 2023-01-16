@@ -34,6 +34,13 @@ export function BusinessJourney({ trip, index }: any) {
                         {((trip.distance / 1000) * 0.621371).toFixed(2) +
                             " miles"}
                     </div>
+                    <div className="text- text-slate-300">
+                        {"£" +
+                            ((trip.distance / 1000) * 0.621371 * 0.45).toFixed(
+                                2
+                            ) +
+                            ""}
+                    </div>
                     <div className="self-end">
                         {getDuration({
                             startTime: trip.startTime,

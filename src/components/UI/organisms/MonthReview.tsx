@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import moment from "moment";
+import { CSVLink, CSVDownload } from "react-csv";
 
 export default function MonthReview({
     date,
@@ -12,8 +13,62 @@ export default function MonthReview({
     setShowBusinessTrips: any;
     showBusinessTrips: boolean;
 }) {
+    const [businessData, setBusinessData] = React.useState<any>([]);
+    const businessDataHeaders = [
+        "Date",
+        "Distance",
+        "Start",
+        "Destination",
+        "Notes",
+    ];
     useEffect(() => {
-        console.log("data", data.data);
+        // console.log("data", data.data);
+
+        if (data.data !== undefined) {
+            setBusinessData(() => {
+                console.log("checking data", data.data);
+                let nick = data.data.data;
+                let businessArray = nick
+                    .sort(
+                        (a: any, b: any) =>
+                            Number(moment(a.startTime).format("DD")) -
+                            Number(moment(b.startTime).format("DD"))
+                    )
+                    .filter((trip: any) => trip.classification === "business")
+                    .map((trip: any, index: any) => {
+                        try {
+                            return [
+                                moment(trip.startTime).format(
+                                    "MMMM Do YYYY, h:mm:ss a"
+                                ),
+                                ((trip.distance / 1000) * 0.621371).toFixed(2) +
+                                    " miles",
+                                // calculate total duration
+
+                                // moment
+                                //     .duration(trip.endTime.diff(trip.startTime)),
+                                //     .asHours(),
+                                // // duration in hours
+                                // var hours = parseInt(duration.asHours());
+
+                                // // duration in minutes
+                                // var minutes = parseInt(duration.asMinutes()) % 60;,
+
+                                trip.startLocationId.address,
+                                trip.endLocationId.address,
+                                // trip.classification,
+                                // trip.purpose,
+                                trip.notes,
+                            ];
+                        } catch (e) {
+                            console.log("rendering journeys error", e);
+                        }
+                    });
+
+                businessArray.unshift(businessDataHeaders);
+                return businessArray;
+            });
+        }
     }, [data]);
 
     return (
@@ -74,6 +129,23 @@ export default function MonthReview({
                             </div>
                             <div className="stat-desc">miles</div>
                         </div>
+                    </div>
+
+                    <div className="">
+                        <CSVLink
+                            filename={"business-mileage.csv"}
+                            className="btn btn-primary"
+                            data={businessData}
+                        >
+                            <>
+                                Download CSV
+                                {
+                                    // if(data !== undefined){
+                                    console.log("data", businessData)
+                                    // }
+                                }
+                            </>
+                        </CSVLink>
                     </div>
 
                     <button
